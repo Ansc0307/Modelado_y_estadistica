@@ -177,11 +177,11 @@
       }
 
       let wb = XLSX.utils.book_new();
-      let ws1 = XLSX.utils.table_to_sheet(document.getElementById("paramTable"));
-      let ws2 = XLSX.utils.table_to_sheet(tabla);
+      let ws2 = XLSX.utils.table_to_sheet(document.getElementById("paramTable"));
+      let ws1 = XLSX.utils.table_to_sheet(tabla);
 
-      XLSX.utils.book_append_sheet(wb, ws1, "Parámetros");
-      XLSX.utils.book_append_sheet(wb, ws2, "Resultados");
+      XLSX.utils.book_append_sheet(wb, ws2, "Parámetros");
+      XLSX.utils.book_append_sheet(wb, ws1, "Resultados");
 
       XLSX.writeFile(wb, "multiplicativo.xlsx");
     }
