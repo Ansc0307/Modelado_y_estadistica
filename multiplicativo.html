@@ -2,14 +2,16 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Generador Lineal</title>
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/lineal.css">
+  <title>Generador Congruencial Multiplicativo</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/multi.css">
+
+  <!-- Librería para exportar a Excel -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
+  
 </head>
 <body>
-  <!-- NAVBAR -->
   <nav>
     <a href="index.html">Inicio</a>
     <a href="lineal.html">Lineal</a>
@@ -18,20 +20,16 @@
   </nav>
 
   <div class="container">
-    <h2>Algoritmo Lineal</h2>
+    <h2>Algoritmo Congruencial Multiplicativo</h2>
     
-   <div class="inputs">
+  <div class="inputs">
   <div class="input-group">
-    <label for="x0">X₀</label>
+    <label for="x0">X₀ (impar)</label>
     <input type="number" id="x0" placeholder="Ingrese X₀">
   </div>
   <div class="input-group">
     <label for="k">K</label>
     <input type="number" id="k" placeholder="Ingrese K">
-  </div>
-  <div class="input-group">
-    <label for="c">c</label>
-    <input type="number" id="c" placeholder="Ingrese c">
   </div>
   <div class="input-group">
     <label for="p">P</label>
@@ -41,10 +39,17 @@
     <label for="decimales">Decimales</label>
     <input type="number" id="decimales" placeholder="Decimales">
   </div>
+  <div class="input-group">
+    <label for="formulaA">Fórmula a</label>
+    <select id="formulaA">
+      <option value="3">a = 3 + 8k</option>
+      <option value="5">a = 5 + 8k</option>
+    </select>
+  </div>
 </div>
 
     
-    <div>
+    <div style="margin-top:15px;">
       <button class="btn-gen" onclick="generar()">Generar</button>
       <button class="btn-clear" onclick="limpiar()">Limpiar</button>
       <button class="btn-export" onclick="exportarExcel()">Exportar a Excel</button>
@@ -55,7 +60,6 @@
       <thead>
         <tr>
           <th>a</th>
-          <th>c</th>
           <th>g</th>
           <th>m</th>
         </tr>
@@ -63,7 +67,6 @@
       <tbody>
         <tr>
           <td id="valA"></td>
-          <td id="valC"></td>
           <td id="valG"></td>
           <td id="valM"></td>
         </tr>
@@ -84,55 +87,82 @@
       <tbody></tbody>
     </table>
   </div>
-
-  <footer>
+    <footer>
     2025 Generadores Numeros Aleatorios - Ayana Siegle
   </footer>
 
   <script>
-    function esEnteroPositivo(n) { return Number.isInteger(n) && n > 0; }
-    function mcd(a, b) { while (b !== 0) { let temp = b; b = a % b; a = temp; } return a; }
+    function esEnteroPositivo(n) {
+      return Number.isInteger(n) && n > 0;
+    }
 
     function generar() {
       const x0 = parseInt(document.getElementById("x0").value);
       const k = parseInt(document.getElementById("k").value);
-      const c = parseInt(document.getElementById("c").value);
       const p = parseInt(document.getElementById("p").value);
       const decimales = parseInt(document.getElementById("decimales").value);
+      const formula = parseInt(document.getElementById("formulaA").value);
 
-      if (!esEnteroPositivo(p)) { alert("P debe ser un número positivo y entero."); return; }
-      if (!esEnteroPositivo(x0)) { alert("X₀ debe ser un número positivo y entero."); return; }
-      if (!esEnteroPositivo(k)) { alert("K debe ser un número positivo y entero."); return; }
-      if (!esEnteroPositivo(c)) { alert("c debe ser un número positivo y entero."); return; }
-      if (decimales < 2) { alert("Se recomienda usar al menos 2 decimales."); return; }
+      // Validaciones
+      if (!esEnteroPositivo(x0) || x0 % 2 === 0) {
+        alert("X₀ debe ser un número positivo, entero e impar.");
+        return;
+      }
+      if (!esEnteroPositivo(k)) {
+        alert("K debe ser un número positivo y entero.");
+        return;
+      }
+      if (!esEnteroPositivo(p)) {
+        alert("P debe ser un número positivo y entero.");
+        return;
+      }
+      if (decimales < 2) {
+        alert("Se recomienda usar al menos 2 decimales.");
+        return;
+      }
 
-      const g = Math.ceil(Math.log(p) / Math.log(2));
+      // g = ln(p)/ln(2) redondeado hacia arriba + 2
+      const g = Math.ceil(Math.log(p) / Math.log(2)) + 2;
+      if (g <= 0) {
+        alert("g debe ser positivo.");
+        return;
+      }
+
       const m = Math.pow(2, g);
-      const a = 1 + 4 * k;
-      if (mcd(c, m) !== 1) { alert("c debe ser relativamente primo con m = " + m); return; }
+      const a = formula + 8 * k;
 
+      // Mostrar parámetros
       document.getElementById("valA").innerText = a;
-      document.getElementById("valC").innerText = c;
       document.getElementById("valG").innerText = g;
       document.getElementById("valM").innerText = m;
       document.getElementById("paramTable").style.display = "table";
 
-      let xi = x0, tabla = document.querySelector("#tabla tbody");
+      // Generar tabla resultados
+      let xi = x0;
+      let tabla = document.querySelector("#tabla tbody");
       tabla.innerHTML = "";
+
       for (let i = 1; i <= p + 1; i++) {
-        let operacion = `(${a} * ${xi} + ${c}) mod (${m})`;
-        let xi_sig = (a * xi + c) % m;
+        let operacion = `(${a} * ${xi}) mod (${m})`;
+        let xi_sig = (a * xi) % m;
         let ri = (xi_sig / (m - 1)).toFixed(decimales);
+
         tabla.innerHTML += `<tr>
-          <td>${i}</td><td>${xi}</td><td>${operacion}</td><td>${xi_sig}</td><td>${ri}</td>
+          <td>${i}</td>
+          <td>${xi}</td>
+          <td>${operacion}</td>
+          <td>${xi_sig}</td>
+          <td>${ri}</td>
         </tr>`;
         xi = xi_sig;
       }
+
       document.getElementById("tabla").style.display = "table";
     }
 
     function limpiar() {
       document.querySelectorAll("input").forEach(inp => inp.value = "");
+      document.getElementById("formulaA").selectedIndex = 0;
       document.querySelector("#tabla tbody").innerHTML = "";
       document.getElementById("tabla").style.display = "none";
       document.getElementById("paramTable").style.display = "none";
@@ -140,13 +170,19 @@
 
     function exportarExcel() {
       let tabla = document.getElementById("tabla");
-      if (tabla.style.display === "none") { alert("Primero genera los números."); return; }
+      if (tabla.style.display === "none") {
+        alert("Primero genera los números.");
+        return;
+      }
+
       let wb = XLSX.utils.book_new();
       let ws2 = XLSX.utils.table_to_sheet(document.getElementById("paramTable"));
       let ws1 = XLSX.utils.table_to_sheet(tabla);
+
       XLSX.utils.book_append_sheet(wb, ws2, "Parámetros");
       XLSX.utils.book_append_sheet(wb, ws1, "Resultados");
-      XLSX.writeFile(wb, "lineal.xlsx");
+
+      XLSX.writeFile(wb, "multiplicativo.xlsx");
     }
   </script>
 </body>
