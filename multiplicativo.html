@@ -48,6 +48,43 @@
   </div>
 </div>
 
+<h3 id="toggleRestricciones" style="cursor:pointer; color:#1a4f5c; text-decoration:underline;">
+  Restricciones de los parámetros
+</h3>
+
+<table id="restriccionesmulti">
+  <thead>
+      <tr>
+        <th>Condición</th>
+        <th>Descripción</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>X₀</td>
+        <td>Debe ser impar, entero y positivo</td>
+      </tr>
+      <tr>
+      <td>K</td>
+      <td>Debe ser un número entero positivo.</td>
+    </tr>
+    <tr>
+      <td>P</td>
+      <td>Debe ser un número entero positivo.</td>
+    </tr>
+    <tr>
+      <td>Decimales</td>
+      <td>Se recomienda ser un número entero mayor o igual a 2.</td>
+    </tr>
+      <tr>
+        <td>a</td>
+        <td>Se calcula con: a = (3 + 8k) ó a = (5 + 8k)</td>
+      </tr>
+      <tr>
+    </tbody>
+</table>
+
+
     
     <div style="margin-top:15px;">
       <button class="btn-gen" onclick="generar()">Generar</button>
@@ -184,6 +221,12 @@
 
       XLSX.writeFile(wb, "multiplicativo.xlsx");
     }
+
+        // Al final de tu script
+document.getElementById("toggleRestricciones").addEventListener("click", () => {
+  const tabla = document.getElementById("restriccionesmulti");
+  tabla.style.display = (tabla.style.display === "none" || tabla.style.display === "") ? "table" : "none";
+});
   </script>
 </body>
 </html>

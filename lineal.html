@@ -41,6 +41,41 @@
     <input type="number" id="decimales" placeholder="Decimales">
   </div>
 </div>
+<h3 id="toggleRestricciones" style="cursor:pointer; color:#1a4f5c; text-decoration:underline;">
+  Restricciones de los parámetros
+</h3>
+
+<table id="restricciones">
+  <thead>
+    <tr>
+      <th>Parámetro</th>
+      <th>Restricciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>X₀</td>
+      <td>Debe ser un número entero positivo.</td>
+    </tr>
+    <tr>
+      <td>K</td>
+      <td>Debe ser un número entero positivo.<br>Se usa en la fórmula <code>a = 1 + 4k</code>.</td>
+    </tr>
+    <tr>
+      <td>c</td>
+      <td>Debe ser un número entero positivo y relativamente primo con <code>m</code>.</td>
+    </tr>
+    <tr>
+      <td>P</td>
+      <td>Debe ser un número entero positivo.</td>
+    </tr>
+    <tr>
+      <td>Decimales</td>
+      <td>Se recomienda ser un número entero mayor o igual a 2.</td>
+    </tr>
+  </tbody>
+</table>
+
 
     
     <div>
@@ -146,6 +181,13 @@
       XLSX.utils.book_append_sheet(wb, ws1, "Resultados");
       XLSX.writeFile(wb, "lineal.xlsx");
     }
+
+    // Al final de tu script
+document.getElementById("toggleRestricciones").addEventListener("click", () => {
+  const tabla = document.getElementById("restricciones");
+  tabla.style.display = (tabla.style.display === "none" || tabla.style.display === "") ? "table" : "none";
+});
+
   </script>
 </body>
 </html>

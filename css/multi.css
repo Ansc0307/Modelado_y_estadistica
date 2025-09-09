@@ -77,3 +77,29 @@
 tr:nth-child(even) { background: #ecf0f1; }
 
     tr:hover { background: #dcdde1; }
+
+    #restriccionesmulti {
+  display: none; /* 👈 oculta por defecto */
+}
+
+
+#restriccionesmulti {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #000 !important; /* 🔹 fuerza negro para el texto */
+  background-color: #fff; /* 🔹 fondo blanco */
+}
+
+#restriccionesmulti th, #restriccionesmulti td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+#restriccionesmulti th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+  color: #000; /* 🔹 títulos en negro */
+}
