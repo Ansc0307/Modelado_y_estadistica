@@ -81,6 +81,9 @@
         <td>Se calcula con: a = (3 + 8k) ó a = (5 + 8k)</td>
       </tr>
       <tr>
+        <td>g</td>
+        <td>Se calcula con la siguiente formula, g = ln(p)/ln(2) (se redondeado hacia arriba) + 2</td>
+      </tr>
     </tbody>
 </table>
 
@@ -133,69 +136,80 @@
       return Number.isInteger(n) && n > 0;
     }
 
-    function generar() {
-      const x0 = parseInt(document.getElementById("x0").value);
-      const k = parseInt(document.getElementById("k").value);
-      const p = parseInt(document.getElementById("p").value);
-      const decimales = parseInt(document.getElementById("decimales").value);
-      const formula = parseInt(document.getElementById("formulaA").value);
+function generar() {
+  const x0Str = document.getElementById("x0").value;
+  const kStr = document.getElementById("k").value;
+  const pStr = document.getElementById("p").value;
+  const decimalesStr = document.getElementById("decimales").value;
+  const formulaStr = document.getElementById("formulaA").value;
 
-      // Validaciones
-      if (!esEnteroPositivo(x0) || x0 % 2 === 0) {
-        alert("X₀ debe ser un número positivo, entero e impar.");
-        return;
-      }
-      if (!esEnteroPositivo(k)) {
-        alert("K debe ser un número positivo y entero.");
-        return;
-      }
-      if (!esEnteroPositivo(p)) {
-        alert("P debe ser un número positivo y entero.");
-        return;
-      }
-      if (decimales < 2) {
-        alert("Se recomienda usar al menos 2 decimales.");
-        return;
-      }
+  // Convertir a números
+  const x0 = Number(x0Str);
+  const k = Number(kStr);
+  const p = Number(pStr);
+  const decimales = Number(decimalesStr);
+  const formula = Number(formulaStr);
 
-      // g = ln(p)/ln(2) redondeado hacia arriba + 2
-      const g = Math.ceil(Math.log(p) / Math.log(2)) + 2;
-      if (g <= 0) {
-        alert("g debe ser positivo.");
-        return;
-      }
+  // Validaciones
+  if (!Number.isInteger(x0) || x0 <= 0 || x0 % 2 === 0) {
+    alert("⚠️ X₀ debe ser un número entero positivo e impar.");
+    return;
+  }
+  if (!Number.isInteger(k) || k <= 0) {
+    alert("⚠️ K debe ser un número entero positivo (no decimales).");
+    return;
+  }
+  if (!Number.isInteger(p) || p <= 0) {
+    alert("⚠️ P debe ser un número entero positivo (no decimales).");
+    return;
+  }
+  if (!Number.isInteger(decimales) || decimales < 2) {
+    alert("⚠️ Debes ingresar un número de decimales mayor o igual a 2 (entero).");
+    return;
+  }
+  if (!Number.isInteger(formula) || formula <= 0) {
+    alert("⚠️ La fórmula A debe ser un número entero positivo.");
+    return;
+  }
 
-      const m = Math.pow(2, g);
-      const a = formula + 8 * k;
+  // g = ln(p)/ln(2) redondeado hacia arriba + 2
+  const g = Math.ceil(Math.log(p) / Math.log(2)) + 2;
+  if (g <= 0) {
+    alert("⚠️ g debe ser positivo.");
+    return;
+  }
 
-      // Mostrar parámetros
-      document.getElementById("valA").innerText = a;
-      document.getElementById("valG").innerText = g;
-      document.getElementById("valM").innerText = m;
-      document.getElementById("paramTable").style.display = "table";
+  const m = Math.pow(2, g);
+  const a = formula + 8 * k;
 
-      // Generar tabla resultados
-      let xi = x0;
-      let tabla = document.querySelector("#tabla tbody");
-      tabla.innerHTML = "";
+  // Mostrar parámetros
+  document.getElementById("valA").innerText = a;
+  document.getElementById("valG").innerText = g;
+  document.getElementById("valM").innerText = m;
+  document.getElementById("paramTable").style.display = "table";
 
-      for (let i = 1; i <= p + 1; i++) {
-        let operacion = `(${a} * ${xi}) mod (${m})`;
-        let xi_sig = (a * xi) % m;
-        let ri = (xi_sig / (m - 1)).toFixed(decimales);
+  // Generar tabla resultados
+  let xi = x0;
+  let tabla = document.querySelector("#tabla tbody");
+  tabla.innerHTML = "";
 
-        tabla.innerHTML += `<tr>
-          <td>${i}</td>
-          <td>${xi}</td>
-          <td>${operacion}</td>
-          <td>${xi_sig}</td>
-          <td>${ri}</td>
-        </tr>`;
-        xi = xi_sig;
-      }
+  for (let i = 1; i <= p + 1; i++) {
+    let operacion = `(${a} * ${xi}) mod (${m})`;
+    let xi_sig = (a * xi) % m;
+    let ri = (xi_sig / (m - 1)).toFixed(decimales);
 
-      document.getElementById("tabla").style.display = "table";
-    }
+    tabla.innerHTML += `<tr>
+      <td>${i}</td>
+      <td>${xi}</td>
+      <td>${operacion}</td>
+      <td>${xi_sig}</td>
+      <td>${ri}</td>
+    </tr>`;
+    xi = xi_sig;
+  }
+
+  document.getElementById("tabla").style.display = "table";
+}
 
     function limpiar() {
       document.querySelectorAll("input").forEach(inp => inp.value = "");
