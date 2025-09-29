@@ -183,6 +183,12 @@ function generar() {
     alert("⚠️ La fórmula A debe ser un número entero positivo.");
     return;
   }
+  if ( isNaN(x0) || isNaN(k) || isNaN(formula) || isNaN(p) || isNaN(decimales)) {
+        alert("Todos los campos deben ser números.");
+        return;
+      }
+
+
 
   // g = ln(p)/ln(2) redondeado hacia arriba + 2
   const g = Math.ceil(Math.log(p) / Math.log(2)) + 2;

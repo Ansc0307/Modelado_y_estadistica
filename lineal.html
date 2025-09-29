@@ -185,6 +185,10 @@
     alert("⚠️ Debes ingresar un número de decimales mayor o igual a 2 (entero).");
     return;
   }
+  if ( isNaN(x0) || isNaN(k) || isNaN(c) || isNaN(p) || isNaN(decimales)) {
+        alert("Todos los campos deben ser números.");
+        return;
+      }
 
   // ----> Aquí ya sabemos que todos son enteros positivos válidos
 
